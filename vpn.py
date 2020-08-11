@@ -223,7 +223,7 @@ def generate(root='/'):
                     else:
                         file.write(formatter.format(f' oifname "{interface}"'))
             if allowed_ips := userconfig.get('AllowedIPs', '').strip():
-                ranges = ', '.join(flatten_address_range(allowed_ips))
+                ranges = ', '.join(map(flatten_address_range, split_comma(allowed_ips)))
                 file.write(formatter.format(f' daddr {{ {ranges} }}'))
             netdevconfig.append((
                 'WireGuardPeer', {
