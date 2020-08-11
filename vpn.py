@@ -203,7 +203,7 @@ def generate(root='/'):
 
     nftablesfile = os.path.join(root, 'etc', 'nftables.conf')
     with awopen(nftablesfile, 'w') as file:
-        file.write('table ip nat\n')
+        file.write('table ip nat {\n')
         file.write('\tchain pre {\n')
         file.write('\t\ttype nat hook prerouting priority filter; policy accept;\n')
         file.write('\t}\n')
