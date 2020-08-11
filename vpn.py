@@ -277,6 +277,7 @@ def wgquick(user):
     psk = userconfig['PresharedKey']
     allowed_ips = ', '.join(map(str,
         ipaddress.collapse_addresses(itertools.chain(
+            [ipaddress.ip_interface(vpn['Address']).ip],
             guess_allowed_ips(split_comma(userconfig.get('AllowedInterfaces', ''))),
             parse_address_ranges(userconfig.get('AllowedIPs', '')),
         ))
