@@ -104,8 +104,8 @@ def init(users):
 
     vpn = config.setdefault('VPN', {})
     vpn.setdefault('Name', 'wg0')
-    setdefaultfunc(vpn, 'ListenAddress', get_public_address)
-    vpn.setdefault('ListenPort', '443')
+    setdefaultfunc(vpn, 'EndpointIP', get_public_address)
+    vpn.setdefault('EndpointPort', '443')
     setdefaultfunc(
         vpn, 'Address', lambda:
         str(ipaddress.IPv4Address(random.randrange(256**3) +
@@ -125,7 +125,7 @@ def init(users):
 
 
 def check_config(config):
-    valid_VPN = {'Name', 'ListenAddress', 'ListenPort', 'Address', 'PrivateKey'}
+    valid_VPN = {'Name', 'EndpointIP', 'EndpointPort', 'Address', 'PrivateKey'}
     valid_user = {'Address', 'AllowedIPs', 'AllowedInterfaces', 'PrivateKey', 'PresharedKey'}
     for user, userconfig in config.items():
         if user == 'VPN':
@@ -153,7 +153,7 @@ def generate(root='/'):
             'Kind': 'wireguard',
         }),
         ('WireGuard', {
-            'ListenPort': config['VPN']['ListenPort'],
+            'ListenPort': config['VPN']['EndpointPort'],
             'PrivateKey': config['VPN']['PrivateKey'],
         }),
     ]
@@ -281,8 +281,8 @@ def wgquick(user):
             parse_address_ranges(userconfig.get('AllowedIPs', '')),
         ))
     ))
-    endpoint_ip = vpn['ListenAddress']
-    endpoint_port = vpn['ListenPort']
+    endpoint_ip = vpn['EndpointIP']
+    endpoint_port = vpn['EndpointPort']
     configtext = f'''\
 [Interface]
 Address={address}
