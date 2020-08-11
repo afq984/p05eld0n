@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT
 """
 
 import socket
+import shutil
 import functools
 import itertools
 import http.server
@@ -180,6 +181,10 @@ def generate(root='/'):
     with awopen(netdevfile, 'w') as file:
         write_config(netdevconfig, file)
     eprint('Generated', netdevfile)
+    try:
+        shutil.chown(netdevfile, 'systemd-network', 'systemd-network')
+    except PermissionError as e:
+        eprint('Chown', netdevfile, 'failed.', e)
 
     networkfile = os.path.join(sdnetworkdir, f'99-{wgx}.network')
     with awopen(networkfile, 'w') as file:
@@ -200,6 +205,10 @@ def generate(root='/'):
             file,
         )
     eprint('Generated', networkfile)
+    try:
+        shutil.chown(networkfile, 'systemd-network', 'systemd-network')
+    except PermissionError as e:
+        eprint('Chown', networkfile, 'failed.', e)
 
     nftablesfile = os.path.join(root, 'etc', 'nftables.conf')
     with awopen(nftablesfile, 'w') as file:
