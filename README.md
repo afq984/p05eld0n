@@ -31,4 +31,20 @@ VPN configuration generator for WireGuard to work with systemd-networkd, nftable
     *   `10.0.0.1-1.24`: too complex so not allowed
     *   `10.0.0.0/24`: equivalent to `10.0.0.0-255`
 
-##
+## User documentation
+
+See docs/userguide.md
+
+## Tips
+
+You can use [systemd.link] with `[Match] MACAddress=` and `[Link] Name=`
+to set meaningful names for the network interfaces.
+
+## See also
+
+*   [ArchWiki/WireGuard](https://wiki.archlinux.org/index.php/WireGuard)
+*   [wg(8)](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8)
+*   [wg-quick(8)](https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8)
+*   [systemd.link]
+
+[systemd.link]: https://www.freedesktop.org/software/systemd/man/systemd.link.html
