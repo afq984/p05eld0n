@@ -40,6 +40,10 @@ See docs/userguide.md
 You can use [systemd.link] with `[Match] MACAddress=` and `[Link] Name=`
 to set meaningful names for the network interfaces.
 
+## Limitations
+
+*   Does not understand IPv6
+
 ## See also
 
 *   [ArchWiki/WireGuard](https://wiki.archlinux.org/index.php/WireGuard)
