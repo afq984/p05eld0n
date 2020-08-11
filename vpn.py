@@ -271,13 +271,14 @@ def wgquick(user):
     check_config(config)
     vpn = config['VPN']
     userconfig = config[user]
+    pingaddr = ipaddress.ip_interface(vpn['Address']).ip
     address = userconfig['Address']
     privkey = userconfig['PrivateKey']
     pubkey = wg_pubkey(vpn['PrivateKey'])
     psk = userconfig['PresharedKey']
     allowed_ips = ', '.join(map(str,
         ipaddress.collapse_addresses(itertools.chain(
-            [ipaddress.ip_interface(vpn['Address']).ip],
+            [pingaddr],
             guess_allowed_ips(split_comma(userconfig.get('AllowedInterfaces', ''))),
             parse_address_ranges(userconfig.get('AllowedIPs', '')),
         ))
@@ -285,6 +286,9 @@ def wgquick(user):
     endpoint_ip = vpn['EndpointIP']
     endpoint_port = vpn['EndpointPort']
     configtext = f'''\
+# wg-{user}.conf
+# ping {pingaddr} to test
+
 [Interface]
 Address={address}
 PrivateKey={privkey}
