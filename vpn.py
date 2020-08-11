@@ -143,6 +143,8 @@ def check_config(config):
 
 
 def generate(root='/'):
+    os.umask(0o077)
+
     with open('vpn.conf') as file:
         config = read_config(file)
     check_config(config)
