@@ -1,6 +1,6 @@
 VPN configuration generator for WireGuard to work with systemd-networkd, nftables and wg-quick.
 
-* systemd-network: VPN server wireguard device/network management
+* systemd-networkd: VPN server wireguard device/network management
 * nftables: Access control, NAT
 * wg-quick: VPN client wireguard device/network management
 
