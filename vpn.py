@@ -6,6 +6,12 @@ SPDX-License-Identifier: MIT
 import socket
 import functools
 import itertools
+import http.server
+import html
+import hashlib
+import signal
+import secrets
+import urllib.parse
 import random
 import subprocess
 import ipaddress
@@ -265,7 +271,64 @@ def guess_allowed_ips(interfaces):
             yield network
 
 
-def wgquick(user):
+def temp_serve(content, filename, serve_timeout):
+    secret_path = secrets.token_urlsafe(32)
+    entry_content = f'''<!doctype html>
+<html><head>
+<title>Link expires after 1 day or downloading</title>
+<style>body {{ font-family: monospace; }}</style>
+</head><body>
+<h3>{html.escape(filename)}</h3>
+<p><a href=
+"/{secret_path}/{html.escape(filename)}"
+>Download</a></p>
+<dl>
+<dt>size</dt><dd>{len(content)}</dd>
+<dt>sha1</dt><dd>{hashlib.sha1(content).hexdigest()}</dd>
+<dt>sha256</dt><dd>{hashlib.sha256(content).hexdigest()}</dd>
+</dl>
+</body></html>
+'''.encode()
+    class RequestHandler(http.server.BaseHTTPRequestHandler):
+        done = lambda: ()
+
+        def do_GET(self):
+            cleanpath = urllib.parse.urlparse(self.path).path
+            if cleanpath == f'/{secret_path}/':
+                self.handle_entry()
+            elif cleanpath == f'/{secret_path}/{filename}':
+                self.send_file()
+            else:
+                self.send_error(http.HTTPStatus.NOT_FOUND)
+
+        def handle_entry(self):
+            self.send_response(http.HTTPStatus.OK)
+            self.send_header('Content-Type', 'text/html')
+            self.send_header('Content-Length', len(entry_content))
+            self.end_headers()
+            self.wfile.write(entry_content)
+
+        def send_file(self):
+            self.send_response(http.HTTPStatus.OK)
+            self.send_header('Content-Type', 'application/octet-stream')
+            self.send_header('Content-Length', len(content))
+            self.end_headers()
+            self.wfile.write(content)
+            self.done()
+
+    with http.server.ThreadingHTTPServer(('', 0), RequestHandler) as server:
+        RequestHandler.done = server.shutdown
+        def handle_signal(signum, frame):
+            server.shutdown()
+        signal.signal(signal.SIGALRM, handle_signal)
+        signal.alarm(serve_timeout)
+        address, port = server.server_address
+        print(f'http://localhost:{port}/{secret_path}/')
+        print(f'http://{get_public_address()}:{port}/{secret_path}/')
+        server.serve_forever()
+
+
+def wgquick(user, serve, serve_timeout):
     with open('vpn.conf') as file:
         config = read_config(file)
     check_config(config)
@@ -300,6 +363,9 @@ AllowedIPs={allowed_ips}
 Endpoint={endpoint_ip}:{endpoint_port}
 '''
     print(end=configtext)
+    if serve:
+        print('-' * 79)
+        temp_serve(configtext.encode(), f'wg-{user}.conf', serve_timeout)
 
 
 def main():
@@ -316,6 +382,9 @@ def main():
 
     parser_wgquick = subparsers.add_parser('wgquick')
     parser_wgquick.add_argument('user')
+    parser_wgquick.add_argument('--serve', action='store_true')
+    parser_wgquick.add_argument(
+        '--serve-timeout', help='timeout for temporary server', default=86400, type=int)
     parser_wgquick.set_defaults(func=wgquick)
 
     args = parser.parse_args()
