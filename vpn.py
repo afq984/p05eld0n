@@ -284,7 +284,7 @@ def guess_allowed_ips(interfaces):
             yield network
 
 
-def temp_serve(content, filename, serve_timeout):
+def serve_once(content, filename, serve_timeout):
     if os.getuid() == 0:
         os.setgroups([])
         os.setgid(grp.getgrnam('nobody').gr_gid)
@@ -383,7 +383,7 @@ Endpoint={endpoint_ip}:{endpoint_port}
     print(end=configtext)
     if serve:
         print('-' * 79)
-        temp_serve(configtext.encode(), f'wg-{user}.conf', serve_timeout)
+        serve_once(configtext.encode(), f'wg-{user}.conf', serve_timeout)
 
 
 def main():
