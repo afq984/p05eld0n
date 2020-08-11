@@ -24,11 +24,11 @@ VPN configuration generator for WireGuard to work with systemd-networkd, nftable
 *   `Address` -- the IP address of the client in the wireguard network
 *   `AllowedInterfaces` -- `,` separated network interfaces to grant access to this user.
     The special string `all` grants access to all interfaces.
-*   `AllowedIPs` -- `,` separated IP ranges that the user is allowed to connect to.
+*   `AllowedIPs` -- `,` separated IP ranges that the user is allowed to connect to. A range can be
+    any of the following:
     *   `10.0.0.1`: single IP
     *   `10.0.0.1-10.0.0.24`: multiple IP addresses
-    *   `10.0.0.1-24`: equivalent to above
-    *   `10.0.0.1-1.24`: too complex so not allowed
+    *   `10.0.0.1-24`: equivalent to above; however `10.0.0.1-1.24` is too complex so not allowed
     *   `10.0.0.0/24`: equivalent to `10.0.0.0-255`
 
 ## User documentation
