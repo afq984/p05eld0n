@@ -33,7 +33,7 @@ VPN configuration generator for WireGuard to work with systemd-networkd, nftable
 
 ## User documentation
 
-See docs/userguide.md
+See [docs/userguide.md]
 
 ## Tips
 
@@ -52,3 +52,4 @@ to set meaningful names for the network interfaces.
 *   [systemd.link]
 
 [systemd.link]: https://www.freedesktop.org/software/systemd/man/systemd.link.html
+[docs/userguide.md]: docs/userguide.md
