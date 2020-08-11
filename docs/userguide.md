@@ -31,3 +31,4 @@ Feed the configuration file to the GUI program.
 ## Testing
 
 You should be able to ping the peer's address if you connected to the VPN successfully.
+See the comment in the configuration file.
