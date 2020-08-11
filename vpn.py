@@ -17,6 +17,8 @@ import subprocess
 import ipaddress
 import os
 import sys
+import pwd
+import grp
 import argparse
 import contextlib
 
@@ -274,6 +276,11 @@ def guess_allowed_ips(interfaces):
 
 
 def temp_serve(content, filename, serve_timeout):
+    if os.getuid() == 0:
+        os.setgroups([])
+        os.setgid(grp.getgrnam('nobody').gr_gid)
+        os.setuid(pwd.getpwnam('nobody').pw_uid)
+
     secret_path = secrets.token_urlsafe(32)
     entry_content = f'''<!doctype html>
 <html><head>
