@@ -54,6 +54,7 @@ to set meaningful names for the network interfaces.
 *   [wg(8)](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8)
 *   [wg-quick(8)](https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8)
 *   [systemd.link]
+*   [nftables quick reference](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
 
 [systemd.link]: https://www.freedesktop.org/software/systemd/man/systemd.link.html
 [docs/userguide.md]: docs/userguide.md
