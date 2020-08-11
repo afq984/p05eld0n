@@ -4,9 +4,9 @@ VPN configuration generator for WireGuard to work with systemd-networkd, nftable
 * nftables: Access control, NAT
 * wg-quick: VPN client wireguard device/network management
 
-## Usage
+## Server Usage
 
-1.  Install systemd-networkd and nftables.
+1.  Install systemd-networkd, nftables, iproute2, python3, wireguard-tools. `pacman -S --needed systemd iproute2 python wireguard-tools`.
 2.  Run <code>./vpn init <i>[USERNAME]...</i></code> to populate the configuration file.
 3.  Update the configuration file as desired.
 4.  Run `./vpn generate` to generate configuration files for systemd-networkd and nftables.
@@ -14,7 +14,7 @@ VPN configuration generator for WireGuard to work with systemd-networkd, nftable
 6.  Run <code>./vpn wgquick <i>USERNAME</i></code> to generate wg-quick configuration files for a specific user.
     Add `--serve` to temporarily serve the generated file over HTTP on a random address.
 
-## Configuration (`vpn.conf`)
+## Server Configuration (`vpn.conf`)
 
 ### `[VPN]` section
 
