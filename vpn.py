@@ -145,7 +145,7 @@ def check_config(config):
             eprint(f'Warning: [{user}] contains invalid option: {key}')
 
 
-def generate(root='/'):
+def generate(root='/', restart=False):
     os.umask(0o077)
 
     with open('vpn.conf') as file:
@@ -244,6 +244,11 @@ def generate(root='/'):
         file.write('\t}\n')
         file.write('}\n')
     eprint('Generated', nftablesfile)
+
+    if restart:
+        cmd = ['systemctl', 'restart', 'systemd-networkd', 'nftables']
+        eprint('Restarting services with:', *cmd)
+        subprocess.check_call(cmd)
 
 
 def split_comma(s):
@@ -396,6 +401,7 @@ def main():
 
     parser_generate = subparsers.add_parser('generate')
     parser_generate.add_argument('--root', default='/')
+    parser_generate.add_argument('--restart', action='store_true')
     parser_generate.set_defaults(func=generate)
 
     parser_wgquick = subparsers.add_parser('wgquick')
